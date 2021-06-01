@@ -7,13 +7,15 @@ const { color } = require("../main.js");
 //local
 let survived = true;
 
+
+
 module.exports = {
     name: 'rr',
     description: 'russian roulette',
     execute(message, args, bot) {
         const embed = new Discord.MessageEmbed()
         .setTitle("Russian Roulette")
-        .setDescription("Let the odds ever be in your favour, " + message.author.name + ".")
+        .setDescription("Let the odds ever be in your favour, " + message.author.username + ".")
         .addField('\u200B', `${result() + "\n" + quip()}`, true)
         .setColor(color);
         message.channel.send(embed);
@@ -25,7 +27,6 @@ function result()
     survived = true;
     //basic 1-6 holes, shooting 2nd slot
     let roll = (Math.random() * 6) | 0; //1-6
-    console.log("roll = " + roll);
 
     holes = [":black_circle:", ":cloud:", ":black_circle:", ":black_circle:", ":black_circle:", ":black_circle:"];
     
@@ -33,7 +34,6 @@ function result()
     {
         holes[1] = ":boom:"; //if roll 2nd slot, make 2nd hole shoot
         survived = false;
-        console.log("survived = " + survived);
     }
     else holes[roll] = ":yellow_circle:"; //else put bullet in its place
     
