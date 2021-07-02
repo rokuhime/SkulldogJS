@@ -7,6 +7,8 @@ const Discord = require("discord.js");
 const bot = new Discord.Client();
 bot.commands = new Discord.Collection();
 
+const database = require('../database/database.js');
+
 const commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
@@ -15,12 +17,13 @@ for (const file of commandFiles) {
 }
 
 const prefix = '~'; //prefix for every command
-const color = "0xff8c96"; //colour for embeds
+const colour = "ff8c96"; //colour for embeds
 let commandsExecuted = 0; //commands since launch
 
 
 //status, runs on startup
 bot.on("ready", () => {
+    database.then(() => console.log('Connected to MongoDB')).catch(err => console.log(err));
     console.log("bot online!");
     bot.user.setPresence({ activity: { name: 'Being ported to JS!' }, status: 'idle' });
 })
@@ -32,7 +35,7 @@ bot.on('message', (message) => { //when msg
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const command = args.shift().toLowerCase();
     
-    if (!message.content.startsWith(prefix) || message.author.bot) return; //if doesnt start with prefix
+    if (!message.content.startsWith(prefix) || message.author.bot) return; //if doesnt start with prefix or is from bot
 
 
     if (bot.commands.has(command)) {
@@ -45,5 +48,6 @@ bot.on('message', (message) => { //when msg
 });
 
 module.exports = { 
-    color: color
+    commands: commandFiles,
+    colour: colour
 }

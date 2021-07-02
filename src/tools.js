@@ -3,85 +3,67 @@ const { Console } = require('console');
 const fs = require('fs'); //file system
 const { getUnpackedSettings } = require('http2');
 const saveloc = "/home/fus/Desktop/Creative/SkulldogJS/save";
+
+const userModel = require('../database/models/usersaves.js');
 //takes discord message, spits out string array split by spaces
 
 module.exports = {
-    //save user data
-    SaveUser(user, data) {
-        console.log(`SaveUser - trying to load user ${user.tag}...`)
-        let file = LoadUser(user);
 
-        if (file == null) { //if user file doesnt exist, make new
-            
+    async SaveUser(user, data) {
+        //try to load, if not make new
+        let userdata = await this.LoadUser(user);
+        if (userdata == null) { //create new user
+            let userSet = new userModel({
+                id: user.id,
+                name: user.tag,
+                gacha: [0]
+            }).save().then(result => {
+                console.log(`user save added for ${result.name}!`);
+                console.log(userdata);
+                userdata = result;
+            })
+                .catch(err => console.log(err))
         }
-
-        else { //if user file exists
-
+        else {
+            userdata = userdata[0];
         }
-
-        try { SaveUser(file); }
-        catch {
-            console.log(`SaveUser - error saving data for user ${user.tag}!`)
-            return false;
-        }
-
-        finally { return true; }
+        console.log(`user found for ${userdata.name}!`);
+            console.log(userdata);
+            console.log(`user found for ${userdata.id}!`);
+        //either way save that data
+        //report if worked
     },
 
-    AddGacha(user, gachaid) //exclusively for adding gacha
-    {
-        console.log(`AddGacha - ${user.tag}, ${gachaid}`);
-        console.log(`AddGacha - trying to load user ${user.tag}...`);
-        let file = LoadUser(user);
-
-        
-
-        this.SaveUser(user, file);
-        console.log(`AddGacha - done for ${user.tag} i think`);
+    async LoadUser(user) {
+        return await userModel.find({
+            id: user.id
+        }, function (err, results) {
+            if (err) {
+                throw err;
+            }
+            if (results.length) {
+                // interact with data
+                results = results[0];
+                console.log(`user ${results.name} found!`);
+                return results;
+            }
+        }).catch(err => console.log(err));
     },
 
-    ToGachaObj(id)
-    {
-        let gachaobj = {};
-        gachaobj[`${id}`] = true;
+    ///////////////////////////////////////////////////////////
+
+    ToGachaObj(id) {
+
         return gachaobj;
-    },
-
-    dev(user)
-    {
-
-
-    },
-
-    LoadUser(user) {
-        console.log(`LoadUser - trying user ${user.tag}...`);
-        let rawdata;
-        try {
-            rawdata = fs.readFileSync(`${saveloc}/userdata/${user.id}.json`);
-            let file = JSON.parse(rawdata);
-    
-            let us;
-            if (typeof file.gacha != "undefined") us = new UserSave(file.tag, file.id, file.gacha);
-            else us = new UserSave(file.tag, file.id);
-    
-            console.log(`LoadUser - success for user ${user.tag}!`);
-            return us;
-        }
-        catch(err) {
-            console.log(`LoadUser - failed for user ${user.tag}!`);
-            console.log(err);
-        }
     }
 }
 
-function UserToUS(user)
-{
+function UserToUS(user) {
     let result = new UserSave(user.tag, user.id);
     return result;
 }
 
-function UserToUS(user, gacha)
-{
+function UserToUS(user, gacha) {
     let result = new UserSave(user.tag, user.id, gacha);
     return result;
 }

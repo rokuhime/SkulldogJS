@@ -2,7 +2,7 @@
 
 //basic
 const Discord = require("discord.js");
-const { color } = require("../main.js");
+const { colour } = require("../main.js");
 
 //local
 let survived = true;
@@ -17,7 +17,7 @@ module.exports = {
         .setTitle("Russian Roulette")
         .setDescription("Let the odds ever be in your favour, " + message.author.username + ".")
         .addField('\u200B', `${result() + "\n" + quip()}`, true)
-        .setColor(color);
+        .setColor(colour);
         message.channel.send(embed);
     },
 };

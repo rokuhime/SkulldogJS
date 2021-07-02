@@ -12,5 +12,6 @@ module.exports = {
                 send = `here ya go lazy ass: https://osu.ppy.sh/users/${args[1]}`;
                 break;
         }
+        message.channel.send(send);
     }
 }

@@ -8,7 +8,7 @@ class UserSave {
     constructor(tag, id) {  // Constructor
         this.tag = tag;
         this.id = id;
-        this.gacha = [];
+        this.gacha = [0]; //int array? holds id of gacha owned
     }
 
     getTag(){
@@ -28,6 +28,6 @@ class UserSave {
     }
 
     subGacha(g){
-      this.gacha.splice(this.gacha.indexOf(g));
+      this.gacha.splice(g);
     }
 }

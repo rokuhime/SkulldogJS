@@ -45,6 +45,12 @@ module.exports = {
                 connection.disconnect();
                 send = `Recieved! Left current VC.`;
                 break;
+
+            case "help":
+                connection.disconnect();
+                send = `Recieved! Left current VC.`;
+                break;
+
             default: //catch all
                 send = "Invalid arguments! Please use `~voice help`.";
                 break;
